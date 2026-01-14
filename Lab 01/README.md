@@ -83,3 +83,45 @@ Sign in as lab-user-01@YOUR_DOMAIN.onmicrosoft.com.
 Use the password you copied. Because you disabled Security Defaults, you should now be able to enter the portal without a mandatory phone setup.
 
 Verify Powers: Search for Users. You should be able to see everyone, but if you try to delete a user, it should fail.
+
+Task 6: The "Leaver" (Cleanup & Recovery)
+
+In a real-world IAM role, you don't just delete users; you manage their departure to prevent "orphaned" accounts.
+
+Deactivation (The First Step):
+
+Go to Users > All users > Select lab-user-01.
+
+Click Edit properties.
+
+Find the Account enabled toggle and set it to No.
+
+Test: Try to log in as lab-user-01 in your private window. You should get an error saying the account is disabled. This is better than deleting because you can still audit their history.
+
+Deletion:
+
+Back in your Admin session, select lab-user-01 and click Delete at the top.
+
+The "Safety Net" (Restoration):
+
+In the Users menu, click Deleted users on the left sidebar.
+
+Select your user and click Restore user.
+
+IAM Fact: In Azure, you have 30 days to restore a deleted user before they are permanently purged.
+
+Final Lab 01 Summary Checklist
+
+Here is what you achieved:
+
+Task 1: Created a security boundary (Tenant).
+
+Task 2: Populated the directory (Users).
+
+Task 3: Established an administrative unit (Group).
+
+Task 4: Defined permissions (RBAC Role).
+
+Task 5: Verified "Least Privilege" (Login Test).
+
+Task 6: Managed the exit process (Deactivation & Restoration).
