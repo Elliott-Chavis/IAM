@@ -1,3 +1,3 @@
-# IAM
+# IAM LABS
 
-01 - 
+01 - Identity Lifecycle & Group-Based RBAC (Updated)
