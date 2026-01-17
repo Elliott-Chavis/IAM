@@ -1,108 +1,81 @@
-Since the Microsoft "Dynamic Group" engine is locked behind a paywall you can't access, we are going to pivot from being a Portal Admin to being an Identity Engineer.
+**Modern 2026 Entra ID Workflow: Active**
 
-In this version of Lab 2, we are building a custom automation loop. We will use the Microsoft Graph API to act as the "brain" that detects users with specific job titles and "syncs" them into our group. This is the exact logic used by professional sync tools like Okta or Google Cloud Directory Sync.
+Since you now have the **P2 License**, we no longer need to "simulate" automation with the Graph API. We can now use the native **Entra Dynamic Membership Engine**. This is the professional way to handle identity at scale, allowing the "System" to do the work you previously did manually with API calls.
 
-Lab 2: Engineered Identity Automation (The "API Sync" Method)
-The Goal
+---
 
-Automate the membership of the Dynamic-Engineers-Group by using an API-driven query that filters for the "Cloud Engineer" job title.
+## 🛠 Lab 2: Automated Identity Governance (P2 Dynamic Groups)
 
-Phase 1: Permission Level-Up
+### [ ] Phase 1: Validating the P2 Engine
 
-Before you can automate, you must grant your tools the power to "Read" and "Write" across the whole directory.
+*Before building, we must ensure the tenant "knows" it has P2 powers.*
 
-Open Graph Explorer and sign in as your License-Admin.
+1. Go to **Identity** > **Overview**.
+2. Verify that under **Licenses**, it explicitly says **Microsoft Entra ID P2**.
+3. *Mac/2026 Fix:* If you just activated it, the "Dynamic User" button might still be grey. If so, sign out of the portal and sign back in to refresh your admin token.
 
-Go to the Modify permissions tab.
+### [ ] Phase 2: Building the Dynamic Infrastructure
 
-Search for and click Consent for these three:
+1. Go to **Groups** > **All groups** > **+ New group**.
+2. **Group type:** `Security`.
+3. **Group name:** `Dynamic-Engineers-Group`.
+4. **Membership type:** Change from "Assigned" to **Dynamic User**.
+5. **Entra roles can be assigned to the group:** Select **No** (Dynamic groups cannot hold direct Entra roles).
 
-User.Read.All (To "Scan" your users).
+### [ ] Phase 3: Writing the "Identity Logic" (Rule Builder)
 
-Group.ReadWrite.All (To "Edit" your group).
+*Instead of a Graph API query, we write a persistent rule that Entra monitors 24/7.*
 
-Directory.ReadWrite.All (To bypass the "Forbidden" 403 errors).
+1. Click **Add dynamic query**.
+2. In the **Rule Builder**, set the following:
+* **Property:** `jobTitle`
+* **Operator:** `Equals`
+* **Value:** `Cloud Engineer`
 
-Crucial: In the popup, check the box "Consent on behalf of your organization" and click Accept.
 
-Phase 2: Creating the Infrastructure (The Group)
+3. Click **Save** at the top.
+4. Click **Create**.
 
-If you haven't successfully created the group yet, we will do it now via the API to ensure it isn't "broken" by portal license checks.
+### [ ] Phase 4: Triggering the "Automation Loop"
 
-Method: POST
+*To test this, we need to give a user the correct attribute.*
 
-URL: https://graph.microsoft.com/v1.0/groups
+1. Go to **Identity** > **Users** > **All users**.
+2. Select `lab-user-01`.
+3. Click **Edit properties**.
+4. Scroll to **Job Information** and set the **Job title** to: `Cloud Engineer`.
+5. Click **Save**.
 
-Request Body:
+### [ ] Phase 5: Monitoring the Membership Processing
 
-JSON
-{
-  "displayName": "Dynamic-Engineers-Group",
-  "mailEnabled": false,
-  "mailNickname": "dynamicengineers",
-  "securityEnabled": true
-}
-Action: Click Run Query.
+*In 2026, dynamic groups are not instant. They run on a processing cycle.*
 
-Note: Copy the id from the response (this is your GroupID).
+1. Go back to **Groups** > **Dynamic-Engineers-Group**.
+2. On the **Overview** page, look for **Dynamic group processing status**.
+3. Wait until it says **Succeeded**.
+4. Click **Members** on the left. `lab-user-01` should now appear automatically.
 
-Phase 3: The "Dynamic" Logic (The Filtered Search)
+---
 
-Now we perform the "Automation" logic. We are going to ask the API to find only the people who meet our criteria.
+## 💬 Lab 2 Discussion History (P2 Automation Questions)
 
-Method: GET
+1. **What happens if I change a user's Job Title to 'Manager'?**
+* **Answer:** Entra will automatically detect the change during the next processing cycle and **remove** them from the group. This is the "Self-Cleaning" nature of P2.
 
-URL: https://graph.microsoft.com/v1.0/users?$filter=jobTitle eq 'Cloud Engineer'&$select=id,displayName,jobTitle
 
-Request Body: (Leave this empty).
+2. **Why can't I manually add a member to this group now?**
+* **Answer:** Once a group is set to **Dynamic**, the "Add Members" button is disabled. The "Rule" is the only authority. This prevents "Permission Creep" where people stay in groups they no longer belong in.
 
-Action: Click Run Query.
 
-Why this is automation: This replaces the "Dynamic Membership Rule" box in the portal. You have just successfully queried your database for a specific attribute. Copy the id of the user(s) returned.
+3. **What is the "Processing Status" I see in the 2026 portal?**
+* **Answer:** It tells you if the engine is currently scanning your directory. If it says "Paused," it usually means there is a syntax error in your rule.
 
-Phase 4: The "Sync" (The Batch Connection)
 
-Instead of adding users one-by-one, we use a Batch Request. This is how you "Automate" at scale.
+4. **Can I use the Graph API to edit this rule?**
+* **Answer:** Yes! Even with P2, you can use Graph to update the `membershipRule` property, but the Portal's **Rule Builder** is now safer because it validates your syntax before you save.
 
-Method: POST
 
-URL: https://graph.microsoft.com/v1.0/$batch
 
-Request Body: (Replace the IDs with yours)
+---
 
-JSON
-{
-  "requests": [
-    {
-      "id": "1",
-      "method": "POST",
-      "url": "/groups/{YOUR-GROUP-ID}/members/$ref",
-      "body": {
-        "@odata.id": "https://graph.microsoft.com/v1.0/directoryObjects/{YOUR-USER-ID}"
-      }
-    }
-  ]
-}
-Action: Click Run Query.
-
-Result: You should see a Status Code 200 with a "204" inside the response body.
-
-Phase 5: Troubleshooting & Verification
-
-Issue: "No Subscription Found" / "Greyed Out Buttons"
-
-The Fix: We bypassed the Portal entirely. By using the API, we aren't using the "Microsoft Automation Engine"—we are acting as the engine ourselves.
-
-Issue: 403 Forbidden
-
-The Fix: This always means you missed the "Consent on behalf of organization" checkbox in Phase 1.
-
-Verification: Open the Entra Admin Center > Groups > Members. Even though the group says "Assigned" (manual), your users are there because your "Automation Script" (the API calls) put them there.
-
-What you just learned (The "Identity Engineer" Perspective)
-
-Because you were blocked by a license, you actually learned a higher-level skill.
-
-Portal Admins only know how to click a "Dynamic" button. If the license expires, they are helpless.
-
-Identity Engineers (You) know how to use the Graph API to query attributes and push batch updates. You can now automate any directory, regardless of whether they have a P2 license or not.
+**Now that Lab 2 is fully upgraded to the P2 standard, your environment is ready for advanced security. Would you like to move to Lab 5: Conditional Access?**
