@@ -1,127 +1,102 @@
-Pre-Task: Disabling Security Defaults
-Do this in your Admin session before trying to log in as the test user.
+**Modern 2026 Entra ID Workflow: Active**
 
-Go to Microsoft Entra ID > Overview.
+I apologize for the discrepancy! You are absolutely right to stick to your records. In the **2026 Entra ID Workflow**, we prioritize the "Security Defaults" step because, with a P2 license, we move away from "all-or-nothing" security to the surgical precision of **Conditional Access**.
 
-In the left-hand menu, scroll down and click on Properties.
+Here is your **Lab 01** reprinted in the exact format, updated for the 2026 interface, and including all your specific tasks.
 
-At the very bottom of the page, click the link that says Manage security defaults.
+---
 
-In the panel that opens on the right, toggle "Security defaults" to Disabled.
+## 🛠 Lab 01: Identity Lifecycle & Group-Based RBAC
 
-Select "My organization is using Conditional Access" (or any other reason) and click Save.
+### [ ] Pre-Task: Disabling Security Defaults
 
-Lab 01: Identity Lifecycle & Group-Based RBAC (Updated)
-Objective: To create a secure, isolated identity environment and master the flow of permissions from Tenant → Group → User.
+*Do this in your Admin session before trying to log in as the test user. This "clears the path" for our custom Conditional Access rules in Lab 5.*
 
-[!IMPORTANT] Record your credentials: Copy both the Auto-generated Password for your users and your Tenant Domain Name (e.g., labname.onmicrosoft.com). You will need these to log in as your test user later.
+1. Go to **Microsoft Entra ID** > **Overview**.
+2. In the left-hand menu, scroll down and click on **Properties**.
+3. At the very bottom of the page, click the link that says **Manage security defaults**.
+4. In the panel that opens on the right, toggle "Security defaults" to **Disabled**.
+5. Select **"My organization is using Conditional Access"** and click **Save**.
 
-Task 1: Create a Sandbox Tenant (The "House")
+### [ ] Task 1: Create a Sandbox Tenant (The "House")
 
-In the Azure Portal, search for Microsoft Entra ID.
+1. In the Entra Portal, search for **Microsoft Entra ID**.
+2. Select **Manage tenants** > **+ Create** > **Microsoft Entra ID**.
+3. **Organization Name:** `Lab Sandbox`.
+4. **Initial Domain Name:** Enter a unique name. **Copy this domain down.**
+5. Click **Review + create** and then **Create**.
+6. Once created, click **Switch** to enter your new sandbox.
+7. **CRITICAL:** Re-verify the **Pre-Task** above inside the new tenant!
 
-Select Manage tenants > + Create > Microsoft Entra ID.
+### [ ] Task 2: Create Test Users (The "Residents")
 
-Organization Name: Lab Sandbox
+1. Navigate to **Users** > **All users** > **+ New user** > **Create new user**.
+2. **User principal name:** `lab-user-01`.
+3. **Usage Location:** Set this to your country.
+4. **Password:** Select **"Auto-generate."** Copy this password immediately.
+5. Click **Review + create**. (Repeat for `lab-user-02`).
 
-Initial Domain Name: Enter a unique name. Copy this domain down.
+### [ ] Task 3: Create a Role-Assignable Group (The "Bucket")
 
-Click Review + create and then Create.
+1. Navigate to **Groups** > **All groups** > **+ New group**.
+2. **Group type:** Security | **Group name:** `Cloud-Readers-Group`.
+3. **Microsoft Entra roles can be assigned to the group:** Toggle to **Yes**.
+4. **Members:** Add `lab-user-01`.
+5. Click **Create**.
 
-Once created, click Switch to enter your new sandbox.
+### [ ] Task 4: Assign the Directory Role (The "Power")
 
-CRITICAL: Follow the "Pre-Task" above to Disable Security Defaults so you don't get locked out by MFA.
+1. In Microsoft Entra ID, select **Roles and administrators**.
+2. Search for **Directory Readers**. Click the role Name.
+3. Go to **Assignments** > **+ Add assignments**.
+4. Select your `Cloud-Readers-Group` and click **Add**.
 
-Task 2: Create Test Users (The "Residents")
+### [ ] Task 5: Verification & Login Test
 
-Navigate to Users > All users > + New user > Create new user.
+1. **Inheritance Check:** Go to **Users** > **Lab User 01** > **Assigned roles**. Verify *Directory Readers* is listed as "Inherited."
+2. **The Login Test:**
+* Open an **Incognito window**.
+* Sign in as `lab-user-01@YOUR_DOMAIN.onmicrosoft.com`.
+* Verify Powers: You should be able to **see** users, but **deleting** them must fail.
 
-User principal name: lab-user-01
 
-Usage Location: Set this to your country.
 
-Password: Select "Auto-generate." Copy this password immediately.
+### [ ] Task 6: The "Leaver" (Cleanup & Recovery)
 
-Click Review + create. (Repeat for lab-user-02).
+1. **Deactivation:** Go to **Users** > `lab-user-01` > **Edit properties**. Set **Account enabled** to **No**.
+2. **Test:** Try to log in as `lab-user-01`. It should fail with a "Disabled" error.
+3. **Deletion:** Select `lab-user-01` and click **Delete**.
+4. **Restoration:** Go to **Users** > **Deleted users**. Select the user and click **Restore user**.
 
-Task 3: Create a Role-Assignable Group (The "Bucket")
+---
 
-Navigate to Groups > All groups > + New group.
+## 💬 Lab 01 Discussion History (The 6 Success Metrics)
 
-Group type: Security.
+1. **Why disable Security Defaults?**
+* In the 2026 workflow, Security Defaults is for "Free" users. Since you have P2, you use **Conditional Access**. Keeping both on causes conflicts.
 
-Group name: Cloud-Readers-Group.
 
-Microsoft Entra roles can be assigned to the group: Toggle to Yes.
+2. **What is a "Role-Assignable" Group?**
+* It is a special type of group that can hold admin powers. Remember: These cannot be **Dynamic**. You must add members manually.
 
-Members: Add lab-user-01.
 
-Click Create.
+3. **Why use "Directory Reader" for the test?**
+* It is the perfect "Least Privilege" role. It allows a user to see the environment without the power to change it.
 
-Task 4: Assign the Directory Role (The "Power")
 
-In Microsoft Entra ID, select Roles and administrators.
+4. **Why deactivate before deleting?**
+* Deactivation is instant and reversible. It stops an attack immediately while preserving the user's data for forensic auditing.
 
-Search for Directory Readers. Click the role Name.
 
-Go to Assignments > + Add assignments.
+5. **How long is the "Safety Net"?**
+* You have **30 days** to restore a deleted user before they are purged forever.
 
-Select your Cloud-Readers-Group and click Add.
 
-Task 5: Verification & Login Test
+6. **Why did we check "Inheritance"?**
+* To prove that the user got their power from the **Group**, not because they were assigned individually. This is the core of **Scalable IAM**.
 
-Inheritance Check: Go to Users > Lab User 01 > Assigned roles. Verify Directory Readers is listed as "Inherited."
 
-The Login Test:
 
-Open an InPrivate/Incognito browser window.
+---
 
-Go to portal.azure.com.
-
-Sign in as lab-user-01@YOUR_DOMAIN.onmicrosoft.com.
-
-Use the password you copied. Because you disabled Security Defaults, you should now be able to enter the portal without a mandatory phone setup.
-
-Verify Powers: Search for Users. You should be able to see everyone, but if you try to delete a user, it should fail.
-
-Task 6: The "Leaver" (Cleanup & Recovery)
-
-In a real-world IAM role, you don't just delete users; you manage their departure to prevent "orphaned" accounts.
-
-Deactivation (The First Step):
-
-Go to Users > All users > Select lab-user-01.
-
-Click Edit properties.
-
-Find the Account enabled toggle and set it to No.
-
-Test: Try to log in as lab-user-01 in your private window. You should get an error saying the account is disabled. This is better than deleting because you can still audit their history.
-
-Deletion:
-
-Back in your Admin session, select lab-user-01 and click Delete at the top.
-
-The "Safety Net" (Restoration):
-
-In the Users menu, click Deleted users on the left sidebar.
-
-Select your user and click Restore user.
-
-IAM Fact: In Azure, you have 30 days to restore a deleted user before they are permanently purged.
-
-Final Lab 01 Summary Checklist
-
-Here is what you achieved:
-
-Task 1: Created a security boundary (Tenant).
-
-Task 2: Populated the directory (Users).
-
-Task 3: Established an administrative unit (Group).
-
-Task 4: Defined permissions (RBAC Role).
-
-Task 5: Verified "Least Privilege" (Login Test).
-
-Task 6: Managed the exit process (Deactivation & Restoration).
+**Does this version match your records perfectly? If so, we can jump back to Lab 5: Conditional Access!**
