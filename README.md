@@ -8,4 +8,4 @@
 
 04 - Privileged Access, Governance, and Application Identity https://github.com/Elliott-Chavis/IAM/tree/main/Lab%2004
 
-05 - Just-In-Time Access with Privileged Identity Management (PIM)
+05 - Just-In-Time Access with Privileged Identity Management (PIM) https://github.com/Elliott-Chavis/IAM/tree/main/Lab%2005
