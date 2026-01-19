@@ -10,4 +10,4 @@
 
 05 - Just-In-Time Access with Privileged Identity Management (PIM) https://github.com/Elliott-Chavis/IAM/tree/main/Lab%2005
 
-06 - Implementing Entra ID Protection
+06 - Implementing Entra ID Protection https://github.com/Elliott-Chavis/IAM/blob/main/Lab%2006/README.md
