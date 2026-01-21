@@ -14,4 +14,7 @@
 
 07 - Device Compliance, App Protection & Shared PC Mode https://github.com/Elliott-Chavis/IAM/blob/main/Lab%2007/README.md
 
+08 - PIM https://github.com/Elliott-Chavis/IAM/tree/main/Lab%2008
+
+
 
