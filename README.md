@@ -12,4 +12,6 @@
 
 06 - Implementing Entra ID Protection https://github.com/Elliott-Chavis/IAM/blob/main/Lab%2006/README.md
 
-07 - Device Compliance, App Protection & Shared PC Mode
+07 - Device Compliance, App Protection & Shared PC Mode https://github.com/Elliott-Chavis/IAM/blob/main/Lab%2007/README.md
+
+
