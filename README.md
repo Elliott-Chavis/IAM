@@ -18,5 +18,7 @@
 
 09 - Entra ID Access Reviews https://github.com/Elliott-Chavis/IAM/blob/main/Lab%2009
 
+10 - Entra ID Identity Protection https://github.com/Elliott-Chavis/IAM/tree/main/Lab%2010
+
 
 
